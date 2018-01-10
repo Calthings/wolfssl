@@ -1,0 +1,7 @@
+framework module WolfSSL {
+  umbrella "./wolfssl/wolfcrypt/"
+
+  export *
+  module * { export * }
+}
+
