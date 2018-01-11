@@ -350,7 +350,8 @@
 
 	#ifndef CTYPE_USER
 	    #include <ctype.h>
-	    #if defined(HAVE_ECC) || defined(HAVE_OCSP) || defined(WOLFSSL_KEY_GEN)
+	    #if defined(HAVE_ECC) || defined(HAVE_OCSP) || \
+            defined(WOLFSSL_KEY_GEN) || !defined(NO_DSA)
 	        #define XTOUPPER(c)     toupper((c))
 	        #define XISALPHA(c)     isalpha((c))
 	    #endif
@@ -450,6 +451,7 @@
         DYNAMIC_TYPE_SALT         = 87,
         DYNAMIC_TYPE_HASH_TMP     = 88,
         DYNAMIC_TYPE_BLOB         = 89,
+        DYNAMIC_TYPE_NAME_ENTRY   = 90,
 	};
 
 	/* max error buffer string size */
