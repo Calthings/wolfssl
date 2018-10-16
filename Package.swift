@@ -3,8 +3,5 @@ import PackageDescription
 
 let package = Package(
     name: "wolfssl",
-    pkgConfig: "libwolfssl",
-//    providers: [
-//        .brew(["libwolfssl"])
-//    ]
+    pkgConfig: "libwolfssl"
 )
