@@ -1,6 +1,6 @@
 /* pwdbased.c
  *
- * Copyright (C) 2006-2017 wolfSSL Inc.
+ * Copyright (C) 2006-2019 wolfSSL Inc.
  *
  * This file is part of wolfSSL.
  *
@@ -198,8 +198,10 @@ int wc_PBKDF2(byte* output, const byte* passwd, int pLen, const byte* salt,
     if (buffer == NULL)
         return MEMORY_E;
     hmac = (Hmac*)XMALLOC(sizeof(Hmac), NULL, DYNAMIC_TYPE_HMAC);
-    if (buffer == NULL)
+    if (hmac == NULL) {
+        XFREE(buffer, NULL, DYNAMIC_TYPE_TMP_BUFFER);
         return MEMORY_E;
+    }
 #endif
 
     ret = wc_HmacInit(hmac, NULL, INVALID_DEVID);

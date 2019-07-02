@@ -1,6 +1,6 @@
 /* bio.c
  *
- * Copyright (C) 2006-2017 wolfSSL Inc.
+ * Copyright (C) 2006-2019 wolfSSL Inc.
  *
  * This file is part of wolfSSL.
  *
@@ -18,6 +18,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1335, USA
  */
+
+#include <wolfssl/wolfcrypt/settings.h>
 
 #if !defined(WOLFSSL_BIO_INCLUDED)
     #ifndef WOLFSSL_IGNORE_FILE_WARN
@@ -733,7 +735,7 @@ size_t wolfSSL_BIO_ctrl_pending(WOLFSSL_BIO *bio)
     if (bio->type == WOLFSSL_BIO_BIO && bio->pair != NULL) {
         WOLFSSL_BIO* pair = bio->pair;
         if (pair->wrIdx > 0 && pair->wrIdx <= pair->rdIdx) {
-            /* in wrap around state where begining of buffer is being
+            /* in wrap around state where beginning of buffer is being
              * overwritten */
             return pair->wrSz - pair->rdIdx + pair->wrIdx;
         }
@@ -1136,7 +1138,7 @@ int wolfSSL_BIO_seek(WOLFSSL_BIO *bio, int ofs)
           return -1;
       }
 
-      /* offset ofs from begining of file */
+      /* offset ofs from beginning of file */
       if (bio->type == WOLFSSL_BIO_FILE &&
               XFSEEK(bio->file, ofs, SEEK_SET) < 0) {
           return -1;

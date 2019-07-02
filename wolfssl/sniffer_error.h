@@ -1,6 +1,6 @@
 /* sniffer_error.h
  *
- * Copyright (C) 2006-2017 wolfSSL Inc.
+ * Copyright (C) 2006-2019 wolfSSL Inc.
  *
  * This file is part of wolfSSL.
  *
@@ -118,6 +118,9 @@
 
 #define BAD_DECRYPT_SIZE 81
 #define EXTENDED_MASTER_HASH_STR 82
+#define SPLIT_HANDSHAKE_MSG_STR 83
+#define ECC_DECODE_STR 84
+#define ECC_PUB_DECODE_STR 85
 /* !!!! also add to msgTable in sniffer.c and .rc file !!!! */
 
 

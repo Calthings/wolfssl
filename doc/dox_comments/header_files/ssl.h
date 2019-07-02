@@ -896,7 +896,7 @@ WOLFSSL_API int wolfSSL_CTX_use_PrivateKey_file(WOLFSSL_CTX*, const char*, int);
     as NULL if not needed.  If path is specified and NO_WOLFSSL_DIR was not
     defined when building the library, wolfSSL will load all CA certificates
     located in the given directory. This function will attempt to load all
-    files in the directory. This function expects PEM formatted CERT_TYPE 
+    files in the directory. This function expects PEM formatted CERT_TYPE
     file with header “-----BEGIN CERTIFICATE-----”.
 
     \return SSL_SUCCESS up success.
@@ -907,6 +907,10 @@ WOLFSSL_API int wolfSSL_CTX_use_PrivateKey_file(WOLFSSL_CTX*, const char*, int);
     read, or is corrupted.
     \return MEMORY_E will be returned if an out of memory condition occurs.
     \return ASN_INPUT_E will be returned if Base16 decoding fails on the file.
+    \return ASN_BEFORE_DATE_E will be returned if the current date is before the
+    before date.
+    \return ASN_AFTER_DATE_E will be returned if the current date is after the
+    after date.
     \return BUFFER_E will be returned if a chain buffer is bigger than the
     receiving buffer.
     \return BAD_PATH_ERROR will be returned if opendir() fails when trying
@@ -958,7 +962,7 @@ WOLFSSL_API int wolfSSL_CTX_load_verify_locations(WOLFSSL_CTX*, const char*,
     as NULL if not needed.  If path is specified and NO_WOLFSSL_DIR was not
     defined when building the library, wolfSSL will load all CA certificates
     located in the given directory. This function will attempt to load all
-    files in the directory based on flags specified. This function expects PEM 
+    files in the directory based on flags specified. This function expects PEM
     formatted CERT_TYPE files with header “-----BEGIN CERTIFICATE-----”.
 
     \return SSL_SUCCESS up success.
@@ -979,7 +983,7 @@ WOLFSSL_API int wolfSSL_CTX_load_verify_locations(WOLFSSL_CTX*, const char*,
     certificates.
     \param path pointer to the name of a directory to load PEM-formatted
     certificates from.
-    \param flags possible mask values are: WOLFSSL_LOAD_FLAG_IGNORE_ERR, 
+    \param flags possible mask values are: WOLFSSL_LOAD_FLAG_IGNORE_ERR,
     WOLFSSL_LOAD_FLAG_DATE_ERR_OKAY and WOLFSSL_LOAD_FLAG_PEM_CA_ONLY
 
     _Example_
@@ -987,7 +991,7 @@ WOLFSSL_API int wolfSSL_CTX_load_verify_locations(WOLFSSL_CTX*, const char*,
     int ret = 0;
     WOLFSSL_CTX* ctx;
     ...
-    ret = wolfSSL_CTX_load_verify_locations_ex(ctx, NUULL, “./certs/external", 
+    ret = wolfSSL_CTX_load_verify_locations_ex(ctx, NUULL, “./certs/external",
         WOLFSSL_LOAD_FLAG_PEM_CA_ONLY);
     if (ret != WOLFSSL_SUCCESS) {
         // error loading CA certs
@@ -2777,7 +2781,7 @@ WOLFSSL_API int  wolfSSL_set_session_secret_cb(WOLFSSL*, SessionSecretCb, void*)
     \code
     const char* fname;
     ...
-    if(wolfSSL_save_session_cache(fname) != SSL_SUCCESS){	
+    if(wolfSSL_save_session_cache(fname) != SSL_SUCCESS){
     	// Fail to write to file.
     }
     \endcode
@@ -5129,7 +5133,7 @@ WOLFSSL_API void wolfSSL_set_psk_server_callback(WOLFSSL*,
 	    wolfSSL_CTX_allow_anon_cipher(ctx);
 	    if(wolfSSL_CTX_set_cipher_list(ctx, “ADH_AES128_SHA”) != SSL_SUCCESS){
 		    // failure case
-	    }	
+	    }
     }
     #endif
     \endcode
@@ -5414,7 +5418,7 @@ WOLFSSL_API const char* wolfSSL_lib_version(void);
 
     \sa wolfSSL_lib_version
 */
-WOLFSSL_API unsigned int wolfSSL_lib_version_hex(void);
+WOLFSSL_API word32 wolfSSL_lib_version_hex(void);
 
 /*!
     \ingroup IO
@@ -6475,7 +6479,7 @@ WOLFSSL_API int  wolfSSL_CTX_SetTmpDH_file(WOLFSSL_CTX*, const char* f,
     \sa wolfSSL_GetDhKey_Sz
     \sa wolfSSL_CTX_SetTMpDH_file
 */
-WOLFSSL_API int wolfSSL_CTX_SetMinDhKey_Sz(WOLFSSL_CTX*, unsigned short);
+WOLFSSL_API int wolfSSL_CTX_SetMinDhKey_Sz(WOLFSSL_CTX*, word16);
 
 /*!
     \ingroup CertsKeys
@@ -6503,7 +6507,7 @@ WOLFSSL_API int wolfSSL_CTX_SetMinDhKey_Sz(WOLFSSL_CTX*, unsigned short);
     \sa wolfSSL_CTX_SetMinDhKey_Sz
     \sa wolfSSL_GetDhKey_Sz
 */
-WOLFSSL_API int wolfSSL_SetMinDhKey_Sz(WOLFSSL*, unsigned short);
+WOLFSSL_API int wolfSSL_SetMinDhKey_Sz(WOLFSSL*, word16);
 
 /*!
     \ingroup CertsKeys
@@ -6532,7 +6536,7 @@ WOLFSSL_API int wolfSSL_SetMinDhKey_Sz(WOLFSSL*, unsigned short);
     \sa wolfSSL_GetDhKey_Sz
     \sa wolfSSL_CTX_SetTMpDH_file
 */
-WOLFSSL_API int wolfSSL_CTX_SetMaxDhKey_Sz(WOLFSSL_CTX*, unsigned short);
+WOLFSSL_API int wolfSSL_CTX_SetMaxDhKey_Sz(WOLFSSL_CTX*, word16);
 
 /*!
     \ingroup CertsKeys
@@ -6560,7 +6564,7 @@ WOLFSSL_API int wolfSSL_CTX_SetMaxDhKey_Sz(WOLFSSL_CTX*, unsigned short);
     \sa wolfSSL_CTX_SetMaxDhKey_Sz
     \sa wolfSSL_GetDhKey_Sz
 */
-WOLFSSL_API int wolfSSL_SetMaxDhKey_Sz(WOLFSSL*, unsigned short);
+WOLFSSL_API int wolfSSL_SetMaxDhKey_Sz(WOLFSSL*, word16);
 
 /*!
     \ingroup CertsKeys
@@ -6734,7 +6738,7 @@ WOLFSSL_API int wolfSSL_SetMinEccKey_Sz(WOLFSSL*, short);
     of the p_hash function.
     \param len an unsigned integer that represents the length of
     the msk variable.
-    \param label a constant char pointer that is copied from in PRF().
+    \param label a constant char pointer that is copied from in wc_PRF().
 
     _Example_
     \code
@@ -6746,9 +6750,7 @@ WOLFSSL_API int wolfSSL_SetMinEccKey_Sz(WOLFSSL*, short);
     return wolfSSL_make_eap_keys(ssl, msk, len, label);
     \endcode
 
-    \sa PRF
-    \sa doPRF
-    \sa p_hash
+    \sa wc_PRF
     \sa wc_HmacFinal
     \sa wc_HmacUpdate
 */
@@ -8080,7 +8082,7 @@ WOLFSSL_API int                  wolfSSL_GetCipherType(WOLFSSL*);
     \sa wolfSSL_GetHmacType
 */
 WOLFSSL_API int                  wolfSSL_SetTlsHmacInner(WOLFSSL*, unsigned char*,
-                                                       unsigned int, int, int);
+                                                       word32, int, int);
 
 /*!
     \brief Allows caller to set the Public Key Callback for ECC Signing.
@@ -9566,7 +9568,7 @@ WOLFSSL_API int wolfSSL_CTX_LoadCRL(WOLFSSL_CTX*, const char*, int, int);
     \param cb a pointer to a callback function of type CbMissingCRL.
     Signature requirement:
 	void (*CbMissingCRL)(const char* url);
-	
+
     _Example_
     \code
     WOLFSSL_CTX* ctx = wolfSSL_CTX_new( protocol method );
@@ -10259,9 +10261,11 @@ WOLFSSL_API int wolfSSL_UseMaxFragment(WOLFSSL* ssl, unsigned char mfl);
     \param ctx pointer to a SSL context, created with wolfSSL_CTX_new().
     \param mfl indicates which is the Maximum Fragment Length requested
     for the session. The available options are:
-    enum { WOLFSSL_MFL_2_9  = 1, 512 bytes WOLFSSL_MFL_2_10 = 2,
-    1024 bytes WOLFSSL_MFL_2_11 = 3, 2048 bytes WOLFSSL_MFL_2_12 = 4,
-    4096 bytes WOLFSSL_MFL_2_13 = 5, 8192 bytes wolfSSL ONLY!!! };
+    enum { WOLFSSL_MFL_2_9  = 1 512 bytes, WOLFSSL_MFL_2_10 = 2 1024 bytes,
+           WOLFSSL_MFL_2_11 = 3 2048 bytes WOLFSSL_MFL_2_12 = 4 4096 bytes,
+           WOLFSSL_MFL_2_13 = 5 8192 bytes wolfSSL ONLY!!!,
+           WOLFSSL_MFL_2_13 = 6  256 bytes wolfSSL ONLY!!!
+    };
 
     _Example_
     \code
@@ -10375,7 +10379,7 @@ WOLFSSL_API int wolfSSL_CTX_UseTruncatedHMAC(WOLFSSL_CTX* ctx);
     WOLFSSL* ssl = wolfSSL_new(ctx);
     …
     if (wolfSSL_UseOCSPStapling(ssl, WOLFSSL_CSR2_OCSP,
-    WOLFSSL_CSR2_OCSP_USE_NONCE) != SSL_SUCCESS){ 	
+    WOLFSSL_CSR2_OCSP_USE_NONCE) != SSL_SUCCESS){
 	    // Failed case.
     }
     \endcode
@@ -10533,7 +10537,7 @@ WOLFSSL_API int wolfSSL_CTX_UseOCSPStaplingV2(WOLFSSL_CTX* ctx,
     \sa wolfSSL_CTX_new
     \sa wolfSSL_CTX_UseSupportedCurve
 */
-WOLFSSL_API int wolfSSL_UseSupportedCurve(WOLFSSL* ssl, unsigned short name);
+WOLFSSL_API int wolfSSL_UseSupportedCurve(WOLFSSL* ssl, word16 name);
 
 /*!
     \brief This function is called on the client side to enable the use of
@@ -10572,7 +10576,7 @@ WOLFSSL_API int wolfSSL_UseSupportedCurve(WOLFSSL* ssl, unsigned short name);
     \sa wolfSSL_UseSupportedCurve
 */
 WOLFSSL_API int wolfSSL_CTX_UseSupportedCurve(WOLFSSL_CTX* ctx,
-                                                           unsigned short name);
+                                                           word16 name);
 
 /*!
     \ingroup IO
@@ -10733,7 +10737,7 @@ WOLFSSL_API int wolfSSL_CTX_UseSessionTicket(WOLFSSL_CTX* ctx);
     \sa wolfSSL_UseSessionTicket
     \sa wolfSSL_set_SessionTicket
 */
-WOLFSSL_API int wolfSSL_get_SessionTicket(WOLFSSL*, unsigned char*, unsigned int*);
+WOLFSSL_API int wolfSSL_get_SessionTicket(WOLFSSL*, unsigned char*, word32*);
 
 /*!
     \ingroup IO
@@ -10767,7 +10771,7 @@ WOLFSSL_API int wolfSSL_get_SessionTicket(WOLFSSL*, unsigned char*, unsigned int
 
     \sa wolfSSL_set_SessionTicket_cb
 */
-WOLFSSL_API int wolfSSL_set_SessionTicket(WOLFSSL*, const unsigned char*, unsigned int);
+WOLFSSL_API int wolfSSL_set_SessionTicket(WOLFSSL*, const unsigned char*, word32);
 
 /*!
     \brief This function sets the session ticket callback. The type
@@ -11079,7 +11083,7 @@ WOLFSSL_API int wolfSSL_get_session_stats(unsigned int* active,
     \ingroup TLS
 
     \brief This function copies the values of cr and sr then passes through to
-    PRF (pseudo random function) and returns that value.
+    wc_PRF (pseudo random function) and returns that value.
 
     \return 0 on success
     \return BUFFER_E returned if there will be an error
@@ -11115,14 +11119,12 @@ WOLFSSL_API int wolfSSL_get_session_stats(unsigned int* active,
     }
     \endcode
 
-    \sa PRF
-    \sadoPRF
-    \sa p_hash
+    \sa wc_PRF
     \sa MakeTlsMasterSecret
 */
 WOLFSSL_API
-int wolfSSL_MakeTlsMasterSecret(unsigned char* ms, unsigned int msLen,
-                               const unsigned char* pms, unsigned int pmsLen,
+int wolfSSL_MakeTlsMasterSecret(unsigned char* ms, word32 msLen,
+                               const unsigned char* pms, word32 pmsLen,
                                const unsigned char* cr, const unsigned char* sr,
                                int tls1_2, int hash_type);
 
@@ -11137,7 +11139,7 @@ int wolfSSL_MakeTlsMasterSecret(unsigned char* ms, unsigned int msLen,
     \return MEMORY_E returned if the allocation of memory failed.
 
     \param key_data a byte pointer that is allocateded in DeriveTlsKeys
-    and passed through to PRF to hold the final hash.
+    and passed through to wc_PRF to hold the final hash.
     \param keyLen a word32 type that is derived in DeriveTlsKeys
     from the WOLFSSL structure’s specs member.
     \param ms a constant pointer type holding the master secret
@@ -11163,14 +11165,13 @@ int wolfSSL_MakeTlsMasterSecret(unsigned char* ms, unsigned int msLen,
     }
     \endcode
 
-    \sa PRF
-    \sa doPRF
+    \sa wc_PRF
     \sa DeriveTlsKeys
     \sa IsAtLeastTLSv1_2
 */
 WOLFSSL_API
-int wolfSSL_DeriveTlsKeys(unsigned char* key_data, unsigned int keyLen,
-                               const unsigned char* ms, unsigned int msLen,
+int wolfSSL_DeriveTlsKeys(unsigned char* key_data, word32 keyLen,
+                               const unsigned char* ms, word32 msLen,
                                const unsigned char* sr, const unsigned char* cr,
                                int tls1_2, int hash_type);
 
